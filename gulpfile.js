@@ -1,6 +1,6 @@
-const imagemin = require("gulp-imagemin");
 const project_folder = "build";
 const source_folder = "source";
+
 const { src, dest } = require("gulp");
 const gulp = require("gulp");
 const browsersync = require("browser-sync").create();
@@ -14,10 +14,7 @@ const gulp_postcss = require("gulp-postcss");
 const plumber = require("gulp-plumber");
 const uglify = require('gulp-uglify-es').default;
 const webp = require("gulp-webp");
-const svgSprite = require("gulp-svg-sprite");
-const svgstore = require("gulp-svgstore")
-
-
+const imagemin = require("gulp-imagemin");
 
 const path = {
   build: {
@@ -128,34 +125,6 @@ function img() {
     )
     .pipe(dest(path.build.img))
     .pipe(src(path.source.svg))
-    .pipe(dest(path.build.img))
-    .pipe(browsersync.stream())
-}
-
-gulp.task("svg_sprite", function() {
-  return src(source_folder + "/sprite/*.svg")
-    .pipe(svgSprite({
-      mode: {
-        stack: {
-          sprite: "../sprite.svg",
-          example: false
-        }
-      }
-    }))
-    .pipe(dest(path.build.img))
-    .pipe(browsersync.stream())
-})
-
-function svg_sprite() {
-  return src(source_folder + "/sprite/*.svg")
-    .pipe(svgSprite({
-      mode: {
-        stack: {
-          sprite: "../sprite.svg",
-          example: false
-        }
-      }
-    }))
     .pipe(dest(path.build.img))
     .pipe(browsersync.stream())
 }
