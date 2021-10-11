@@ -47,7 +47,10 @@ function browserSync() {
       baseDir: "./" + project_folder + "/"
     },
     port: 3000,
-    notify: false
+    notify: false,
+    open: true,
+    cors: true,
+    ui: false
   })
 }
 
