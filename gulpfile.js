@@ -1,6 +1,5 @@
 const project_folder = "build";
 const source_folder = "source";
-
 const { src, dest } = require("gulp");
 const gulp = require("gulp");
 const browsersync = require("browser-sync").create();
@@ -28,15 +27,15 @@ const path = {
     html: [source_folder + "/*.html", "!" + source_folder + "/_*.html"],
     scss: source_folder + "/scss/style.scss",
     js: source_folder + "/js/script.js",
-    img: source_folder + "/img/**/*.{jpg, png}",
+    img: source_folder + "/img/**/*.{jpg,png,svg}",
     svg: source_folder + "/img/**/*.svg",
-    fonts: source_folder + "/fonts/*.{woff, woff2}",
+    fonts: source_folder + "/fonts/*.{woff,woff2}",
   },
   watch: {
     html: source_folder + "/**/*.html",
     scss: source_folder + "/scss/**/*.scss",
     js: source_folder + "/js/**/*.js",
-    img: source_folder + "/img/**/*.{jpg, png, svg}"
+    img: source_folder + "/img/**/*.{jpg,png,svg}"
   },
   clean: "./" + project_folder + "/"
 }
@@ -112,28 +111,22 @@ function js() {
 
 function img() {
   return src(path.source.img)
-    .pipe(webp())
+    .pipe(webp({
+      quality: 90
+    }))
     .pipe(dest(path.build.img))
     .pipe(src(path.source.img))
-    .pipe(
-      imagemin([
-        imagemin.mozjpeg({quality: 75, progressive: true}),
-        imagemin.optipng({optimizationLevel: 5}),
-        imagemin.svgo({
-          plugins: [
-            {removeViewBox: false}
-          ]
-        })
-      ])
-    )
-    .pipe(dest(path.build.img))
-    .pipe(src(path.source.svg))
+    .pipe(imagemin([
+      imagemin.optipng({optimizationLevel: 3}),
+      imagemin.mozjpeg({quality: 75, progressive: true}),
+      imagemin.svgo()
+    ]))
     .pipe(dest(path.build.img))
     .pipe(browsersync.stream())
 }
 
-const build = gulp.series(clean, gulp.parallel(img, js, css, html));
-const watch = gulp.parallel(build, watchFiles, browserSync);
+const build = gulp.series(clean, gulp.parallel(img, html, css, js));
+const watch = gulp.parallel(build, browserSync, watchFiles);
 
 exports.build = build;
 exports.watch = watch;
